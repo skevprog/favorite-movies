@@ -1,80 +1,134 @@
-import React, { Component } from 'react';
+import React, {
+  useState, useEffect, useRef,
+} from 'react';
 import axios from 'axios';
 import Card from '../../components/Card';
 import SearchBar from '../../components/SearchBar';
 
-const apiUrl = 'http://www.omdbapi.com/?apikey=be947be3';
+const API_URL = 'https://api.themoviedb.org/3';
+const API_KEY = '5327697ea8ddd8a4b0662631cd99b7b5';
 
-class CardsContainer extends Component {
-  constructor() {
-    super();
-    this.state = {
-      movies: [],
-      searchTerm: '',
-    };
-  }
+const CardsContainer = () => {
+  const [moviesData, setMoviesData] = useState({
+    movies: [],
+    total_results: 0,
+    total_pages: 0,
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [topRated, setTopRated] = useState(true);
+  const isFirstRun = useRef(true);
 
 
-  async componentDidMount() {
-    // initial state
-    const defaultMovies = await axios.get(`${apiUrl}&s=batman`);
-    const { Search } = defaultMovies.data;
-    this.setState({ movies: Search });
-  }
+  // Component didMount only executes first after first render
+  useEffect(() => {
+    getTopRatedMovies();
+  }, []);
 
-    handleOnChange = (e) => {
-      this.setState({
-        searchTerm: e.target.value,
-      });
+  // Executes every time page changes (componentDidUpdate)
+  useEffect(() => {
+    // Avoids to execute in first render
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
     }
+    searchMovies();
+  }, [page]);
 
-    handleOnSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const { searchTerm } = this.state;
-        const resp = await axios.get(`${apiUrl}&s=${searchTerm}`);
-        const { Search: movies } = resp.data;
-        this.setState({ movies });
-      } catch (error) {
-        console.error('Error', error);
-      }
+  const getMoviesData = async (url) => {
+    try {
+      const moviesApi = await axios.get(url);
+      const { results: movies, total_results, total_pages } = moviesApi.data;
+      setMoviesData({ movies, total_results, total_pages });
+    } catch (error) {
+      console.error('Something went wrong', error);
     }
+  };
 
-    showDetails = async (movieId) => {
-      try {
-        const movieDetails = await axios.get(`${apiUrl}&i=s${movieId}`);
-        console.log(movieDetails);
-      } catch (error) {
-        console.error('Error', error);
-      }
-    }
+  const getTopRatedMovies = async () => {
+    const topRatedMoviesUrl = `${API_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`;
+    getMoviesData(topRatedMoviesUrl);
+  };
 
-    renderCards = () => {
-      const { movies } = this.state;
-      return movies.map(({ Poster, Title, imdbID } = {}) => (
-        <Card key={imdbID} onClick={() => this.showDetails(imdbID)} image={Poster} title={Title} />
-      ));
-    }
+  const searchMovies = async () => {
+    const movieSearchUrl = `${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}&page=${page}&include_adult=false`;
+    getMoviesData(movieSearchUrl);
+    if (!topRated) return;
+    setTopRated(false);
+  };
 
+  const handleOnChange = (e) => setSearchTerm(e.target.value);
 
-    render() {
-      const { movies, searchTerm } = this.state;
-      if (!movies) {
-        return <div>Loading...</div>;
-      }
-      return (
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    setPage(1);
+    searchMovies();
+  };
+
+  const renderCards = () => moviesData.movies.map(({
+    poster_path,
+    original_title,
+    id,
+  } = {}) => (
+    <Card
+      key={id}
+      image={poster_path}
+      title={original_title}
+    />
+  ));
+
+  return (
+    <>
+      <SearchBar
+        onSubmit={handleOnSubmit}
+        onChange={handleOnChange}
+        value={searchTerm}
+      />
+      <div className="results">
+        total =>
+        {moviesData.total_results}
+      </div>
+      <div className="results">
+        pages =>
+        {moviesData.total_pages}
+      </div>
+      <div className="results">
+        page =>
+        {page}
+      </div>
+      {
+    !moviesData.movies
+      ? (<div>Loading...</div>)
+      : (
         <>
-          <SearchBar
-            onSubmit={this.handleOnSubmit}
-            onChange={this.handleOnChange}
-            value={searchTerm}
-          />
           <div className="movies-container">
-            {this.renderCards()}
+            {renderCards()}
           </div>
-        </>
-      );
-    }
+          {
+         !topRated && (moviesData.total_pages > 1) && (
+         <div className="pagination">
+           <button
+             type="button"
+             disabled={page === 1}
+             onClick={() => setPage(page - 1)}
+           >
+             Previous
+           </button>
+           <button
+             type="button"
+             disabled={page === moviesData.total_pages}
+             onClick={() => setPage(page + 1)}
+           >
+             Next
+           </button>
+         </div>
+         )
 }
+        </>
+      )
+}
+    </>
+  );
+};
 
 export default CardsContainer;
