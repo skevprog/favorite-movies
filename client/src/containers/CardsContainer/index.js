@@ -4,6 +4,7 @@ import React, {
 import axios from 'axios';
 import Card from '../../components/Card';
 import SearchBar from '../../components/SearchBar';
+import Pagination from '../../components/Pagination';
 
 const API_URL = 'https://api.themoviedb.org/3';
 const API_KEY = '5327697ea8ddd8a4b0662631cd99b7b5';
@@ -45,12 +46,12 @@ const CardsContainer = () => {
     }
   };
 
-  const getTopRatedMovies = async () => {
+  const getTopRatedMovies = () => {
     const topRatedMoviesUrl = `${API_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`;
     getMoviesData(topRatedMoviesUrl);
   };
 
-  const searchMovies = async () => {
+  const searchMovies = () => {
     const movieSearchUrl = `${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}&page=${page}&include_adult=false`;
     getMoviesData(movieSearchUrl);
     if (!topRated) return;
@@ -84,18 +85,6 @@ const CardsContainer = () => {
         onChange={handleOnChange}
         value={searchTerm}
       />
-      <div className="results">
-        total =>
-        {moviesData.total_results}
-      </div>
-      <div className="results">
-        pages =>
-        {moviesData.total_pages}
-      </div>
-      <div className="results">
-        page =>
-        {page}
-      </div>
       {
     !moviesData.movies
       ? (<div>Loading...</div>)
@@ -106,24 +95,15 @@ const CardsContainer = () => {
           </div>
           {
          !topRated && (moviesData.total_pages > 1) && (
-         <div className="pagination">
-           <button
-             type="button"
-             disabled={page === 1}
-             onClick={() => setPage(page - 1)}
-           >
-             Previous
-           </button>
-           <button
-             type="button"
-             disabled={page === moviesData.total_pages}
-             onClick={() => setPage(page + 1)}
-           >
-             Next
-           </button>
-         </div>
+           <Pagination
+             totalPages={moviesData.total_pages}
+             currentPage={page}
+             totalResults={moviesData.total_results}
+             onPrevPageClick={() => setPage(page - 1)}
+             onNextPageClick={() => setPage(page + 1)}
+           />
          )
-}
+            }
         </>
       )
 }
