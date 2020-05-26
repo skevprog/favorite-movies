@@ -26,25 +26,6 @@ body {
   flex: center;
 }
 
-.movie-card {
-  max-width: 20%;
-  min-width: 220px;
-  display: block;
-  margin: 1em;
-}
-
-.movie-card p {
-  margin: 0;
-  background-color: darkgray;
-  text-align: center;
-  min-height: 36px;
-  padding: 0.4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-}
-
 .movie-image {
   display: block;
   height: 17em;

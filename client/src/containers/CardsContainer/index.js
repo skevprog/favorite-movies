@@ -2,9 +2,7 @@ import React, {
   useState, useEffect, useRef,
 } from 'react';
 import axios from 'axios';
-import Card from '../../components/Card';
-import SearchBar from '../../components/SearchBar';
-import Pagination from '../../components/Pagination';
+import { Card, SearchBar, Pagination } from '../../components';
 
 const API_URL = 'https://api.themoviedb.org/3';
 const API_KEY = '5327697ea8ddd8a4b0662631cd99b7b5';
@@ -19,7 +17,6 @@ const CardsContainer = () => {
   const [page, setPage] = useState(1);
   const [topRated, setTopRated] = useState(true);
   const isFirstRun = useRef(true);
-
 
   // Component didMount only executes first after first render
   useEffect(() => {
@@ -70,13 +67,19 @@ const CardsContainer = () => {
     poster_path,
     original_title,
     id,
+    ...rest
   } = {}) => (
     <Card
       key={id}
       image={poster_path}
       title={original_title}
+      onClick={() => showInfo(rest)}
     />
   ));
+
+  const showInfo = (info) => {
+    alert(info.overview);
+  };
 
   return (
     <>
