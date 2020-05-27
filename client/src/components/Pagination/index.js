@@ -45,7 +45,6 @@ const Pagination = ({
   </div>
 );
 
-
 Pagination.defaultProps = {
   totalPages: 0,
   currentPage: 0,
@@ -62,4 +61,4 @@ Pagination.propTypes = {
   onNextPageClick: PropTypes.func,
 };
 
-export default Pagination;
+export default React.memo(Pagination);

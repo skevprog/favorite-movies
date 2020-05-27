@@ -32,36 +32,13 @@ body {
   width: 100%;
 }
 
-.input {
-  padding: 1em;
-  background: none;
-  outline: none;
-  border: none;
-  display: block;
-  padding: 15px;
-  background-color: #EEE;
-	border-radius: 8px;
-  width: 100%;
-	color: #53565A;
-	font-size: 20px;
-	font-weight: 400;
-}
-
 .title {
   color: #fff;
   font-size: 3em;
   text-align: center;
 }
 
-input {
-  box-sizing: border-box;
+.message {
+  color: #fff;
 }
 
-.search-container {
-  width: 100%;
-  margin: 0 auto;
-}
-
-.search-container form {
-  width: 100%;
-}
