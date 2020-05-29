@@ -19,6 +19,8 @@ body {
   flex-wrap: wrap;
   margin: 0 auto;
   justify-content: center;
+  align-items: center;
+  min-height: 50vh;
 }
 
 .movies-container::after {

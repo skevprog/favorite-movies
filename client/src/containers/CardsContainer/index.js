@@ -2,7 +2,9 @@ import React, {
   useState, useEffect, useRef, useReducer, useCallback,
 } from 'react';
 import axios from 'axios';
-import { Card, SearchBar, Pagination } from '../../components';
+import {
+  Card, SearchBar, Pagination, Alert, Loader,
+} from '../../components';
 import CardsContainerReducer from './reducer';
 
 const API_URL = 'https://api.themoviedb.org/3';
@@ -72,7 +74,7 @@ const CardsContainer = () => {
   const renderCards = () => {
     const { movies = [] } = state.moviesData;
     return !movies.length
-      ? <h2 className="message">No movies found</h2>
+      ? <Alert type="INFO" message="No movies found" />
       : movies.map(({
         poster_path,
         original_title,
@@ -91,15 +93,10 @@ const CardsContainer = () => {
   const renderMovies = () => {
     const { loading, errorMessage } = state;
     if (errorMessage) {
-      return (
-        <h2>
-          ERRORRRR!!!!
-          {errorMessage}
-        </h2>
-      );
+      return (<Alert type="ERROR" message={errorMessage} />);
     }
     if (loading) {
-      return <h2>LOADING...</h2>;
+      return <Loader />;
     }
     return renderCards();
   };

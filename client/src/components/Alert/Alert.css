@@ -1,0 +1,13 @@
+.alert {
+    padding: 2em;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.error {
+    color: red;
+}
+
+.info {
+    color: brown;
+}
