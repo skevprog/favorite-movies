@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import Title from './Title';
 import Alert from './Alert';
 import Loader from './Loader';
+import MoviesList from './MoviesList';
 
 export {
   Card,
@@ -12,4 +13,5 @@ export {
   Title,
   Alert,
   Loader,
+  MoviesList,
 };

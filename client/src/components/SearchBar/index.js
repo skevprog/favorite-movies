@@ -7,15 +7,11 @@ const SearchBar = ({ search }) => {
 
   const handleOnChange = (e) => setSearchValue(e.target.value);
 
-  const resetInputField = () => {
-    setSearchValue('');
-  };
-
   const handleOnSubmit = (e) => {
     e.preventDefault();
     search(searchValue);
-    resetInputField();
   };
+
   return (
     <div className="search-container">
       <form onSubmit={handleOnSubmit} className="form">
@@ -33,4 +29,4 @@ SearchBar.propTypes = {
   search: PropTypes.func,
 };
 
-export default SearchBar;
+export default React.memo(SearchBar);

@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import axios from 'axios';
 import {
-  Card, SearchBar, Pagination, Alert, Loader,
+  SearchBar, Pagination, MoviesList,
 } from '../../components';
 import CardsContainerReducer from './reducer';
 
@@ -18,10 +18,10 @@ const initialState = {
 
 const CardsContainer = () => {
   const [state, dispatch] = useReducer(CardsContainerReducer, initialState);
-  const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const [topRated, setTopRated] = useState(true);
   const isFirstRun = useRef(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [topRated, setTopRated] = useState(true);
 
   // componentDidMount
   useEffect(() => {
@@ -55,50 +55,17 @@ const CardsContainer = () => {
     }
   };
 
-  const getTopRatedMovies = () => {
-    const topRatedMoviesUrl = `${API_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`;
-    getMoviesData(topRatedMoviesUrl);
-  };
-
   const searchMovies = (searchValue) => {
     const movieSearchUrl = `${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${searchValue}&page=${page}&include_adult=false`;
+    if (searchValue !== searchTerm)setSearchTerm(searchValue);
     getMoviesData(movieSearchUrl);
     if (!topRated) return;
     setTopRated(false);
   };
 
-  const showInfo = (info) => {
-    alert(info.overview);
-  };
-
-  const renderCards = () => {
-    const { movies = [] } = state.moviesData;
-    return !movies.length
-      ? <Alert type="INFO" message="No movies found" />
-      : movies.map(({
-        poster_path,
-        original_title,
-        id,
-        ...rest
-      } = {}) => (
-        <Card
-          key={id}
-          image={poster_path}
-          title={original_title}
-          onClick={() => showInfo(rest)}
-        />
-      ));
-  };
-
-  const renderMovies = () => {
-    const { loading, errorMessage } = state;
-    if (errorMessage) {
-      return (<Alert type="ERROR" message={errorMessage} />);
-    }
-    if (loading) {
-      return <Loader />;
-    }
-    return renderCards();
+  const getTopRatedMovies = () => {
+    const topRatedMoviesUrl = `${API_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`;
+    getMoviesData(topRatedMoviesUrl);
   };
 
   const nextPage = useCallback(
@@ -127,11 +94,10 @@ const CardsContainer = () => {
     );
   };
 
-  const search = (searchValue) => {
-    setPage(1);
-    setSearchTerm(searchValue);
+  const search = useCallback((searchValue) => {
+    if (page !== 1) setPage(1);
     searchMovies(searchValue);
-  };
+  }, [searchTerm]);
 
   const { moviesData: { total_pages = 0 } } = state;
 
@@ -140,9 +106,7 @@ const CardsContainer = () => {
       <SearchBar search={search} />
       <>
         {!topRated && (total_pages > 1) && renderPagination()}
-        <div className="movies-container">
-          {renderMovies()}
-        </div>
+        <MoviesList state={state} />
       </>
     </>
   );

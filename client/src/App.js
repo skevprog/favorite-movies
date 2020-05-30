@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import CardsContainer from './containers/CardsContainer';
-import Title from './components/Title';
+import { Title } from './components';
 
 function App() {
   return (
