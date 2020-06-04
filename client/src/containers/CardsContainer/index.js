@@ -6,6 +6,7 @@ import {
   SearchBar, Pagination, MoviesList,
 } from '../../components';
 import CardsContainerReducer from './reducer';
+import MovieDetail from '../../components/MovieDetails';
 
 const API_URL = 'https://api.themoviedb.org/3';
 const API_KEY = '5327697ea8ddd8a4b0662631cd99b7b5';
@@ -21,6 +22,7 @@ const CardsContainer = () => {
   const [page, setPage] = useState(1);
   const isFirstRun = useRef(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showDetail, setShowDetail] = useState({ title: {}, open: false });
   const [topRated, setTopRated] = useState(true);
 
   // componentDidMount
@@ -97,7 +99,15 @@ const CardsContainer = () => {
   const search = useCallback((searchValue) => {
     if (page !== 1) setPage(1);
     searchMovies(searchValue);
-  }, [searchTerm]);
+  }, []);
+
+  const showMovieDetail = useCallback((title) => {
+    setShowDetail({ title, open: true });
+  }, []);
+
+  const close = () => {
+    setShowDetail({ open: false });
+  };
 
   const { moviesData: { total_pages = 0 } } = state;
 
@@ -106,7 +116,8 @@ const CardsContainer = () => {
       <SearchBar search={search} />
       <>
         {!topRated && (total_pages > 1) && renderPagination()}
-        <MoviesList state={state} />
+        <MoviesList state={state} onClick={showMovieDetail} />
+        {showDetail.open ? <MovieDetail movieData={showDetail.title} close={close} /> : null}
       </>
     </>
   );

@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import Title from './Title';
 import Alert from './Alert';
 import Loader from './Loader';
+import Image from './Image';
 import MoviesList from './MoviesList';
 
 export {
@@ -14,4 +15,5 @@ export {
   Alert,
   Loader,
   MoviesList,
+  Image,
 };
