@@ -49,8 +49,8 @@ Pagination.defaultProps = {
   totalPages: 0,
   currentPage: 0,
   totalResults: 0,
-  onPrevPageClick: null,
-  onNextPageClick: null,
+  onPrevPageClick: () => {},
+  onNextPageClick: () => {},
 };
 
 Pagination.propTypes = {

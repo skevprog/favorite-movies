@@ -22,7 +22,7 @@ const SearchBar = ({ search }) => {
 };
 
 SearchBar.defaultProps = {
-  search: null,
+  search: () => {},
 };
 
 SearchBar.propTypes = {

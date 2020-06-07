@@ -38,10 +38,16 @@ const MoviesList = ({ state, onClick }) => {
 
 MoviesList.defaultProps = {
   state: {},
+  onClick: () => {},
 };
 
 MoviesList.propTypes = {
-  state: PropTypes.objectOf(PropTypes.object),
+  state: PropTypes.shape({
+    moviesData: PropTypes.object,
+    loading: PropTypes.bool,
+    errorMessage: PropTypes.string,
+  }),
+  onClick: PropTypes.func,
 };
 
 export default React.memo(MoviesList);
